@@ -2,42 +2,44 @@ import fs from 'node:fs';
 import qr from 'qrcode';
 import { createCanvas, Image } from 'canvas';
 import admZip from 'adm-zip';
-
+import { program } from 'commander';
 const zip = new admZip();
 
-const args = process.argv;
-const input = process.argv.indexOf('--input') > -1 ? args[process.argv.indexOf('--input') + 1] : undefined;
-const output = process.argv.indexOf('--output') > -1 ? args[process.argv.indexOf('--output') + 1] : undefined;
-let zipOutput = process.argv.indexOf('--zip-output') > -1 ? args[process.argv.indexOf('--zip-output') + 1] : undefined;
-const logoSrc = process.argv.indexOf('--logo') > -1 ? args[process.argv.indexOf('--logo') + 1] : undefined;
-const layerSrc = process.argv.indexOf('--layer') > -1 ? args[process.argv.indexOf('--layer') + 1] : undefined;
-let url = process.argv.indexOf('--url') > -1 ? args[process.argv.indexOf('--url') + 1] : undefined;
-let errorCorrectionLevel = process.argv.indexOf('--error-lvl') > -1 ? args[process.argv.indexOf('--error-lvl') + 1] : undefined;
-let resolution = process.argv.indexOf('--resolution') > -1 ? args[process.argv.indexOf('--resolution') + 1] : undefined;
-let imgQuality = process.argv.indexOf('--quality') > -1 ? args[process.argv.indexOf('--quality') + 1] : undefined;
-const type = process.argv.indexOf('--type') > -1 ? args[process.argv.indexOf('--type') + 1] : undefined;
-let dark = process.argv.indexOf('--dark') > -1 ? args[process.argv.indexOf('--dark') + 1] : undefined;
-let light = process.argv.indexOf('--light') > -1 ? args[process.argv.indexOf('--light') + 1] : undefined;
+program
+    .version('1.0.0', '-v, --version')
+    .usage('[OPTIONS]...')
+    .option('-i, --input <value>', 'CSV input file.')
+    .option('-o, --output <value>', 'Output directory.')
+    .option('-zo, --zip-output <value>', 'Output location for the zip.', './archive.zip')
+    .option('-l, --logo <value>', 'Logo to overlay on top.')
+    .option('-L, --layer <value>', 'Layer to overlay on top.')
+    .option('-u, --url <value>', 'Base URL t use for the QR codes.')
+    .option('-e, --error-lvl <value>', 'Level of error correction [L, M, Q, H].', 'Q')
+    .option('-r, --resolution <value>', 'Image resolution.', 512)
+    .option('-q, --quality <value>', 'Image quality.', 0.8)
+    .option('-t, --type <value>', 'Image file type [jpg, png]', 'jpg')
+    .option('-b, --dark <value>', 'Colour to use in hex instead of black.', '000000')
+    .option('-w, --light <value>', 'Colour to use in hex instead of white.', 'FFFFFF')
+    .parse(process.argv);
 
-if (args.indexOf('--help') > -1 || args.length < 3) {
-    console.log(
-        'QR code generator usage:\n' +
-        '\n' +
-        '--input Input csv file.\n' +
-        '--output Output directory.\n' +
-        '--zip-output Output location for the zip. (Default to same directory as output)\n' +
-        '--logo Logo to overlay on top.\n' +
-        '--layer Layer to overlay on top.\n' +
-        '--url Base URL to use for the QR code.\n' +
-        '--error-lvl Level of error correction [L, M, Q, H] (Default: Q).\n' +
-        '--resolution Resolution of the image (Default: 512x512).\n' +
-        '--quality Image quality [0.1 - 1] (Default: 0.8).\n' +
-        '--type Image type to use [jpg, png] (Default: jpg).\n' +
-        '--dark Specify the colour to use in hex instead of black.\n' +
-        '--light Specify the colour to use in hex instead of white.\n'
-    );
-    process.exit(0);
+if (process.argv.length < 3) {
+    program.help();
 }
+
+const options = program.opts();
+
+const input = options.input;
+const output = options.output;
+let zipOutput = options.zipOutput;
+const logoSrc = options.logo;
+const layerSrc = options.layer;
+let url = options.url;
+let errorCorrectionLevel = options.errorLvl;
+let resolution = options.resolution;
+let imgQuality = options.quality;
+const type = options.type;
+let dark = options.dark;
+let light = options.light;
 
 if (!errorCorrectionLevel) {
     errorCorrectionLevel = 'Q';
