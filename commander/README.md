@@ -17,18 +17,21 @@ Supported error correction:
 Low and medium will likely not work, depends the logo used.
 
 ```
-node index.js --help
+Usage: index [OPTIONS]...
 
-QR code generator usage:
-
---input Input csv file.
---output Output directory.
---zip-output Output location for the zip. (Default to same directory as output)
---logo Logo to overlay on top.
---layer Layer to overlay on top.
---url Base URL to use for the QR code.
---error-lvl Level of error correction [L, M, Q, H] (Default: Q).
---resolution Resolution of the image (Default: 512x512)
---quality Image quality [0.1 - 1] (Default: 0.8)
---type Image type to use [jpg, png] (Default: jpg)
+Options:
+  -v, --version              output the version number
+  -i, --input <value>        CSV input file.
+  -o, --output <value>       Output directory.
+  -zo, --zip-output <value>  Output location for the zip. (default: "./archive.zip")
+  -l, --logo <value>         Logo to overlay on top.
+  -L, --layer <value>        Layer to overlay on top.
+  -u, --url <value>          Base URL t use for the QR codes.
+  -e, --error-lvl <value>    Level of error correction [L, M, Q, H]. (default: "Q")
+  -r, --resolution <value>   Image resolution. (default: 512)
+  -q, --quality <value>      Image quality. (default: 0.8)
+  -t, --type <value>         Image file type [jpg, png] (default: "jpg")
+  -b, --dark <value>         Colour to use in hex instead of black. (default: "000000")
+  -w, --light <value>        Colour to use in hex instead of white. (default: "FFFFFF")
+  -h, --help                 display help for command
 ```
